@@ -2,10 +2,19 @@ import { DEFAULT_CONFIG, type ModelConfig } from './config'
 import { statusForTongue, statusForUsage, worstStatus } from './status'
 import type { Check, CheckId, RigInputs, RigResult } from './types'
 
-/** Missing, negative and non-finite entries count as zero. */
+/** Sanitises one numeric input.
+ * IN: n, a raw value that may be missing, negative, NaN or infinite.
+ * OUT: n when it is a positive finite number, otherwise 0.
+ */
 const clean = (n: number | undefined): number =>
   n !== undefined && Number.isFinite(n) && n > 0 ? n : 0
 
+/** Builds one usage check: how much of a limit is used, and its status.
+ * IN: id, which check this is; used, the amount in lbs (null if it can't be worked out);
+ *     limit, the rating in lbs (0 or less means not rated); config, the model config;
+ *     estimate, true when the figure is an estimate the UI must label.
+ * OUT: a Check with pct (unrounded) and status, or status 'not-rated' when used is null or there is no limit.
+ */
 function usageCheck(
   id: CheckId,
   used: number | null,
@@ -34,6 +43,16 @@ function usageCheck(
   }
 }
 
+/** Runs the whole towing model for one rig.
+ * IN: inputs, the truck limits, truck load, trailer weights and setup (all weights in lbs);
+ *     config, the thresholds and axle estimate constants (defaults to DEFAULT_CONFIG).
+ * OUT: a RigResult with trailer loaded weight, tongue weight, payload used and remaining, curb weight,
+ *      combined weight (for GCWR), the estimated rear axle load, each check's usage and status,
+ *      and the overall verdict (the worst status of the rated checks).
+ * Formulas: trailer loaded = UVW + cargo + fluids; tongue = loaded x tongue %;
+ * payload used = passengers + bed + hardware + tongue; combined = curb + payload used + trailer - tongue,
+ * because tongue weight is already counted in payload used.
+ */
 export function calculateRig(
   inputs: RigInputs,
   config: ModelConfig = DEFAULT_CONFIG,
