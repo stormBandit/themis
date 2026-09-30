@@ -14,6 +14,7 @@ export const FIELD_IDS = [
   'uvw',
   'cargo',
   'fluids',
+  'measuredRearAxle',
 ] as const
 
 export type FieldId = (typeof FIELD_IDS)[number]
@@ -122,5 +123,6 @@ export function toRigInputs(state: FormState): RigInputs {
     },
     trailer: { uvw: w.uvw, cargo: w.cargo, fluids: w.fluids },
     setup: { tonguePct: state.tonguePct, wdh: state.wdh },
+    measured: { rearAxleLoad: w.measuredRearAxle },
   }
 }
