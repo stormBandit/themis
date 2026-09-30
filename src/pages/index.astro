@@ -1,0 +1,27 @@
+---
+import '@fontsource/big-shoulders-display/800'
+import '@fontsource/ibm-plex-mono/400'
+import '@fontsource/ibm-plex-mono/600'
+import '@fontsource/ibm-plex-sans/400'
+import '@fontsource/ibm-plex-sans/500'
+import '../styles/tokens.css'
+import '../styles/global.css'
+import Calculator from '../components/Calculator'
+---
+
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="A free, visual towing setup checker. See whether your truck and trailer are within payload, tow rating, GCWR, axle and receiver limits."
+    />
+    <title>Themis, towing setup checker</title>
+  </head>
+  <body>
+    <Calculator client:load />
+  </body>
+</html>
