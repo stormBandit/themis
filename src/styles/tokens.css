@@ -1,0 +1,98 @@
+/* themis design tokens: "Weigh Ticket". See DESIGN.md. */
+
+:root {
+  --desk: #ddd7ca;
+  --paper: #f6f3ea;
+  --paper-edge: #e7e2d4;
+  --ink: #1c1b19;
+  --ink-muted: #5e5a52;
+  --rule: #b9b3a3;
+  --stamp-pass: #1f6b45;
+  --stamp-close: #9a5b00;
+  --stamp-over: #b3261e;
+  --carbon: #2b4c7e;
+  --stamp-blend: multiply;
+
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 28px;
+  --text-2xl: 40px;
+  --text-3xl: 56px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --radius-input: 2px;
+  --border: 1px solid var(--rule);
+  --border-dashed: 1px dashed var(--rule);
+  --shadow-ticket: 0 1px 0 rgba(0, 0, 0, 0.06), 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  --perf-hole: 8px;
+  --perf-pitch: 16px;
+
+  --stamp-rotate: -4deg;
+  --stamp-opacity: 0.92;
+  --stamp-border: 3px;
+
+  --stroke-rig: 1.5px;
+
+  --gutter: 16px;
+  --content-max: 1120px;
+  --tap-min: 44px;
+  --bp-two-col: 960px; /* reference only; use in media queries as 960px */
+
+  --dur-stamp: 120ms;
+  --dur-rig: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --desk: #121211;
+    --paper: #1f1e1b;
+    --paper-edge: #2a2925;
+    --ink: #ece7da;
+    --ink-muted: #a8a294;
+    --rule: #4a473f;
+    --stamp-pass: #5bbf8a;
+    --stamp-close: #e2a94a;
+    --stamp-over: #f07167;
+    --carbon: #8fb0e6;
+    --stamp-blend: normal;
+    --shadow-ticket: 0 1px 0 rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+}
+
+:root[data-theme='dark'] {
+  --desk: #121211;
+  --paper: #1f1e1b;
+  --paper-edge: #2a2925;
+  --ink: #ece7da;
+  --ink-muted: #a8a294;
+  --rule: #4a473f;
+  --stamp-pass: #5bbf8a;
+  --stamp-close: #e2a94a;
+  --stamp-over: #f07167;
+  --carbon: #8fb0e6;
+  --stamp-blend: normal;
+  --shadow-ticket: 0 1px 0 rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-stamp: 0ms;
+    --dur-rig: 0ms;
+  }
+}
