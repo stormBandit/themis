@@ -8,7 +8,6 @@ import {
   DISCLAIMER,
   FIELD_GROUPS,
   NEEDS_HINT,
-  STICKER_NOTE,
   VERDICT_HELP,
 } from '../lib/copy'
 import { Field } from './Field'
@@ -65,7 +64,7 @@ export default function Calculator() {
             {FIELD_GROUPS.map((group) => (
               <fieldset className="group" key={group.title}>
                 <legend className="group__title">{group.title}</legend>
-                {group.title === 'Truck' && <p className="fine">{STICKER_NOTE}</p>}
+                {group.note && <p className="fine">{group.note}</p>}
                 {group.fields.map((f) => (
                   <Field
                     key={f.id}
