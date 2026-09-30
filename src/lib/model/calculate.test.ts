@@ -272,3 +272,61 @@ describe('input hygiene', () => {
     expect(r.payloadUsed).toBe(75 + 528)
   })
 })
+
+describe('measured rear axle load', () => {
+  const base = withTruck({ gvwr: 7000, rearGawr: 4000 })
+  const measured = (lbs: number): RigInputs => ({
+    ...base,
+    measured: { rearAxleLoad: lbs },
+  })
+
+  it('replaces the estimate and is no longer labelled an estimate', () => {
+    const r = calculateRig(measured(3400))
+    expect(r.rearAxleLoad).toBe(3400)
+    expect(r.rearAxleSource).toBe('measured')
+    expect(r.checks.rearAxle.estimate).toBe(false)
+    expect(r.checks.rearAxle.pct).toBeCloseTo(85, 10)
+    expect(r.checks.rearAxle.status).toBe('green')
+  })
+
+  it('flags an over-limit measured load', () => {
+    const r = calculateRig(measured(4200))
+    expect(r.checks.rearAxle.status).toBe('red')
+    expect(r.verdict).toBe('red')
+  })
+
+  it('works without GVWR and payload capacity', () => {
+    const r = calculateRig({
+      truck: { rearGawr: 4000 },
+      load: {},
+      trailer: {},
+      setup: {},
+      measured: { rearAxleLoad: 3900 },
+    })
+    expect(r.curbWeight).toBeNull()
+    expect(r.checks.rearAxle.status).toBe('amber')
+    expect(r.rearAxleSource).toBe('measured')
+  })
+
+  it('falls back to the estimate when the measurement is blank, zero or invalid', () => {
+    for (const value of [undefined, 0, -5, Number.NaN]) {
+      const r = calculateRig({ ...base, measured: { rearAxleLoad: value } })
+      expect(r.rearAxleSource).toBe('estimate')
+      expect(r.checks.rearAxle.estimate).toBe(true)
+    }
+    expect(calculateRig(base).rearAxleSource).toBe('estimate')
+  })
+
+  it('has no source when there is nothing to estimate from', () => {
+    const r = calculateRig({ truck: {}, load: {}, trailer: {}, setup: {} })
+    expect(r.rearAxleSource).toBeNull()
+  })
+
+  it('does not change any other result', () => {
+    const a = calculateRig(base)
+    const b = calculateRig(measured(3400))
+    expect(b.payloadUsed).toBe(a.payloadUsed)
+    expect(b.combinedWeight).toBe(a.combinedWeight)
+    expect(b.checks.payload).toEqual(a.checks.payload)
+  })
+})

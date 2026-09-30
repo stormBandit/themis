@@ -130,3 +130,11 @@ describe('toRigInputs', () => {
     expect(r.payloadUsed).toBe(1103)
   })
 })
+
+describe('measured rear axle field', () => {
+  it('flows through to the model inputs, converting from kg', () => {
+    let s = formReducer(initialState(), { type: 'setUnit', unit: 'kg' })
+    s = formReducer(s, { type: 'edit', field: 'measuredRearAxle', text: '1500' })
+    expect(toRigInputs(s).measured?.rearAxleLoad).toBeCloseTo(3306.93, 1)
+  })
+})

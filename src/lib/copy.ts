@@ -8,7 +8,7 @@ export const STICKER_NOTE =
   'Specs vary by trim and options. Check the sticker on your door jamb and trailer and enter those exact numbers.'
 
 export const ESTIMATE_NOTE =
-  'Estimate. For the real number, weigh your rig on a certified scale, and check your rear axle rating (GAWR) on the door jamb sticker.'
+  'Estimate. For the real number, weigh your rig on a certified scale and enter the rear axle load under “Weighed on a scale”. Check your rear axle rating (GAWR) on the door jamb sticker.'
 
 export const CHECK_LABELS: Record<CheckId, string> = {
   payload: 'Payload',
@@ -24,7 +24,7 @@ export const NEEDS_HINT: Record<CheckId, string> = {
   payload: 'Enter your payload capacity to check this.',
   towRating: 'Enter your max tow rating to check this.',
   gcwr: 'Enter GVWR, payload capacity and GCWR to check this.',
-  rearAxle: 'Enter GVWR, payload capacity and rear GAWR to check this.',
+  rearAxle: 'Enter your rear GAWR, plus GVWR and payload capacity or a scale reading, to check this.',
   receiver: 'Enter your receiver max tongue weight to check this.',
   tongue: 'Enter your trailer weights to check this.',
 }
@@ -64,7 +64,7 @@ export interface FieldGroup {
 export const FIELD_GROUPS: FieldGroup[] = [
   {
     title: 'Truck',
-    note: 'From the door jamb sticker and your owner’s manual.',
+    note: STICKER_NOTE,
     fields: [
       { id: 'gvwr', label: 'GVWR' },
       { id: 'payloadCapacity', label: 'Payload capacity' },
@@ -89,5 +89,10 @@ export const FIELD_GROUPS: FieldGroup[] = [
       { id: 'cargo', label: 'Cargo' },
       { id: 'fluids', label: 'Fluids (water, propane)' },
     ],
+  },
+  {
+    title: 'Weighed on a scale',
+    note: 'Optional. If you have a real number, it replaces our estimate.',
+    fields: [{ id: 'measuredRearAxle', label: 'Rear axle load (certified scale)' }],
   },
 ]
