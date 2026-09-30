@@ -539,3 +539,81 @@ input {
     font-size: var(--text-2xl);
   }
 }
+
+/* Rig drawing: single-ink line art. Only a part that is close or over is tinted. */
+.rig {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.rig-shape {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: var(--stroke-rig);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition:
+    fill var(--dur-rig) var(--ease-out),
+    stroke var(--dur-rig) var(--ease-out);
+}
+
+.rig-part[data-status='amber'] .rig-shape {
+  fill: color-mix(in srgb, var(--stamp-close) 20%, transparent);
+  stroke: var(--stamp-close);
+}
+
+.rig-part[data-status='red'] .rig-shape {
+  fill: color-mix(in srgb, var(--stamp-over) 20%, transparent);
+  stroke: var(--stamp-over);
+}
+
+.rig-detail {
+  stroke: var(--ink-muted);
+}
+
+.rig-move {
+  transition: transform var(--dur-rig) var(--ease-out);
+}
+
+.rig-ground {
+  stroke: var(--rule);
+  stroke-width: var(--stroke-rig);
+  stroke-dasharray: 6 6;
+  vector-effect: non-scaling-stroke;
+}
+
+.rig-label {
+  fill: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.col-right {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.ticket--rig .ticket__body {
+  padding-bottom: 0;
+}
+
+@media (min-width: 960px) {
+  /* Both right-hand tickets stay in view together. The column scrolls if it is taller than the screen. */
+  .col-right {
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding: var(--space-5) var(--space-3);
+    margin: calc(var(--space-5) * -1) calc(var(--space-3) * -1);
+  }
+
+  .ticket--results {
+    position: static;
+  }
+}
