@@ -47,7 +47,7 @@ function usageCheck(
  * IN: inputs, the truck limits, truck load, trailer weights and setup (all weights in lbs);
  *     config, the thresholds and axle estimate constants (defaults to DEFAULT_CONFIG).
  * OUT: a RigResult with trailer loaded weight, tongue weight, payload used and remaining, curb weight,
- *      combined weight (for GCWR), the estimated rear axle load, each check's usage and status,
+ *      combined weight (for GCWR), the rear axle load (measured if given, else estimated) and its source, each check's usage and status,
  *      and the overall verdict (the worst status of the rated checks).
  * Formulas: trailer loaded = UVW + cargo + fluids; tongue = loaded x tongue %;
  * payload used = passengers + bed + hardware + tongue; combined = curb + payload used + trailer - tongue,
@@ -78,10 +78,15 @@ export function calculateRig(
 
   const { curbShare, payloadShare, hitchLeverage, wdhShare } = config.rearAxle
   const tongueOnRear = tongueWeight * hitchLeverage * (setup.wdh ? 1 - wdhShare : 1)
-  const rearAxleLoad =
+  const estimatedRearAxle =
     curbWeight === null
       ? null
       : curbWeight * curbShare + otherPayload * payloadShare + tongueOnRear
+  const measuredRearAxle = clean(inputs.measured?.rearAxleLoad)
+  const rearAxleSource =
+    measuredRearAxle > 0 ? 'measured' : estimatedRearAxle !== null ? 'estimate' : null
+  const rearAxleLoad =
+    rearAxleSource === 'measured' ? measuredRearAxle : estimatedRearAxle
 
   const tongueCheck: Check =
     trailerLoaded > 0
@@ -106,7 +111,13 @@ export function calculateRig(
     payload: usageCheck('payload', payloadUsed, payloadCapacity, config),
     towRating: usageCheck('towRating', trailerLoaded, clean(truck.maxTow), config),
     gcwr: usageCheck('gcwr', combinedWeight, clean(truck.gcwr), config),
-    rearAxle: usageCheck('rearAxle', rearAxleLoad, clean(truck.rearGawr), config, true),
+    rearAxle: usageCheck(
+      'rearAxle',
+      rearAxleLoad,
+      clean(truck.rearGawr),
+      config,
+      rearAxleSource === 'estimate',
+    ),
     receiver: usageCheck('receiver', tongueWeight, clean(truck.receiverMax), config),
     tongue: tongueCheck,
   }
@@ -119,6 +130,7 @@ export function calculateRig(
     curbWeight,
     combinedWeight,
     rearAxleLoad,
+    rearAxleSource,
     checks,
     verdict: worstStatus(Object.values(checks).map((c) => c.status)),
   }

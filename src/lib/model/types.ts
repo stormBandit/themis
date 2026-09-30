@@ -37,11 +37,18 @@ export interface SetupInputs {
   wdh?: boolean
 }
 
+/** Numbers the user weighed on a certified scale. They replace the model's estimates. */
+export interface MeasuredInputs {
+  /** Loaded rear axle weight, in lbs. */
+  rearAxleLoad?: number
+}
+
 export interface RigInputs {
   truck: TruckSpec
   load: LoadInputs
   trailer: TrailerInputs
   setup: SetupInputs
+  measured?: MeasuredInputs
 }
 
 export interface Check {
@@ -67,8 +74,10 @@ export interface RigResult {
   curbWeight: number | null
   /** Truck + payload + trailer, without double-counting tongue weight. Null without curb weight. */
   combinedWeight: number | null
-  /** Estimated rear axle load. Null without curb weight. */
+  /** Rear axle load: the measured figure if given, otherwise the estimate. Null with neither. */
   rearAxleLoad: number | null
+  /** Where `rearAxleLoad` came from. */
+  rearAxleSource: 'measured' | 'estimate' | null
   checks: Record<CheckId, Check>
   /** Worst status of all rated checks, or `not-rated` when nothing could be checked. */
   verdict: CheckStatus
