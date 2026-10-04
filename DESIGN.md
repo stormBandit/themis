@@ -80,7 +80,7 @@ Scale (px): 12, 14, 16, 20, 28, 40, 56. Body 16. Result figures 28 (mobile) / 40
 
 **Tongue weight window.** A mono scale strip from 0 to 20% with the 10–15% window shaded and a needle for the current value.
 
-**Rig drawing.** Single-ink line art, 1.5 px strokes in `--ink`, no fills except the part that is failing (filled with that stamp ink at 20% plus the stamp ink stroke). Dashed ground line. Rear squat and hitch angle move with the model. Labels in small mono.
+**Rig drawing.** Die-cut sticker cartoon: chunky rounded black outlines, a white sticker border around the whole rig, big friendly wheels and bubble windows. The status stamp ink is the second ink and fills the part it belongs to (PASS green, CLOSE amber, OVER red, not rated muted). Small status reactions: sparkles when the truck or trailer passes, a sweat drop and strain lines at the rear wheel when the rear axle is over. Dashed ground line. Rear squat and hitch angle move with the model, and wheels always stay on the ground line. Each part has a text label with a status dot and word (PASS, CLOSE, OVER, N/A). The sticker palette (`--rig-*` in `tokens.css`) is the same in light and dark because it is a printed sticker on the ticket.
 
 **Disclaimer.** Printed as the ticket footer in 12 px Plex Sans: "Estimates only. Confirm on a certified scale and with the labels on your truck and trailer."
 

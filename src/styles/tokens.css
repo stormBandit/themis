@@ -48,6 +48,14 @@
 
   --stroke-rig: 1.5px;
 
+  /* Rig drawing (sticker style). Same in light and dark: it is a printed sticker on the ticket. */
+  --rig-outline: #1c1b19;
+  --rig-sticker: #ffffff;
+  --rig-glass: #e4f3f6;
+  --rig-metal: #d9d9d4;
+  --rig-tire: #3b3935;
+  --rig-drop: #8fd3f0;
+
   --gutter: 16px;
   --content-max: 1120px;
   --tap-min: 44px;
