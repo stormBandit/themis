@@ -1,57 +1,74 @@
-import { useId } from 'react'
-import type { RigResult, CheckStatus } from '../../lib/model'
-import { rigGeometry, describeRig } from '../../lib/rig/geometry'
-import { STAMP_WORD } from '../../lib/copy'
-import { Truck } from './Truck'
-import { Trailer } from './Trailer'
-import { PICKUP, TRAVEL_TRAILER } from './variants'
-import type { Point } from './variants'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import type { RigResult } from '../../lib/model'
+import { describeRig, rigGeometry } from '../../lib/rig/geometry'
+import { buildRigArt } from './stickerPickupTravel'
 
 interface RigDrawingProps {
   result: RigResult
   wdh: boolean
 }
 
-const GROUND_Y = 220
+const EASE_MS = 200
 
-/** Rotates a point about a pivot. Used to find where the hitch ball ends up when the truck pitches. */
-function rotateAbout(p: Point, pivot: Point, deg: number): Point {
-  const a = (deg * Math.PI) / 180
-  const dx = p.x - pivot.x
-  const dy = p.y - pivot.y
-  return {
-    x: pivot.x + dx * Math.cos(a) - dy * Math.sin(a),
-    y: pivot.y + dx * Math.sin(a) + dy * Math.cos(a),
-  }
+/** Eases a number toward its target over EASE_MS, or jumps straight there under reduced motion.
+ * IN: target, the value to move toward.
+ * OUT: the current in-between value to draw.
+ */
+function useEased(target: number): number {
+  const [value, setValue] = useState(target)
+  const current = useRef(target)
+
+  useEffect(() => {
+    const from = current.current
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced || from === target) {
+      current.current = target
+      setValue(target)
+      return
+    }
+    let frame = 0
+    const start = performance.now()
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / EASE_MS, 1)
+      const eased = 1 - (1 - t) ** 3
+      current.current = from + (target - from) * eased
+      setValue(current.current)
+      if (t < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [target])
+
+  return value
 }
 
-function Label({
-  x,
-  anchor,
-  name,
-  status,
-}: {
-  x: number
-  anchor: 'start' | 'end'
-  name: string
-  status: CheckStatus
-}) {
-  return (
-    <text className="rig-label" x={x} y={GROUND_Y + 28} textAnchor={anchor}>
-      {name} {STAMP_WORD[status]}
-    </text>
-  )
-}
-
-/** Truck and trailer line art. Squat and hitch angle come from the model; failing parts are tinted. */
+/** The sticker-style rig drawing. Squat and nose angle come from the model and ease in. Failing parts
+ * show their status ink, and the SVG has a text alternative built from the same statuses. */
 export function RigDrawing({ result, wdh }: RigDrawingProps) {
   const titleId = useId()
   const descId = useId()
   const g = rigGeometry(result, wdh)
-  const truck = PICKUP
-  const wheelbase = truck.rearWheel.x - truck.frontWheel.x
-  const pitchDeg = (Math.atan2(g.rearSquatPx, wheelbase) * 180) / Math.PI
-  const ball = rotateAbout(truck.hitchBall, truck.frontWheel, pitchDeg)
+  const squat = useEased(g.rearSquatPx)
+  const angle = useEased(g.hitchAngleDeg)
+  const art = useMemo(
+    () =>
+      buildRigArt({
+        squat,
+        angle,
+        truckBody: g.parts.truckBody,
+        truckRear: g.parts.truckRear,
+        hitch: g.parts.hitch,
+        trailerBody: g.parts.trailerBody,
+      }),
+    [
+      squat,
+      angle,
+      g.parts.truckBody,
+      g.parts.truckRear,
+      g.parts.hitch,
+      g.parts.trailerBody,
+    ],
+  )
 
   return (
     <svg
@@ -62,24 +79,7 @@ export function RigDrawing({ result, wdh }: RigDrawingProps) {
     >
       <title id={titleId}>Your rig</title>
       <desc id={descId}>{describeRig(g)}</desc>
-      <line className="rig-ground" x1="0" y1={GROUND_Y} x2="640" y2={GROUND_Y} />
-      <Truck
-        variant={truck}
-        pitchDeg={pitchDeg}
-        bodyStatus={g.parts.truckBody}
-        rearStatus={g.parts.truckRear}
-        hitchStatus={g.parts.hitch}
-      />
-      <Trailer
-        variant={TRAVEL_TRAILER}
-        ball={ball}
-        hitchAngleDeg={g.hitchAngleDeg}
-        status={g.parts.trailerBody}
-      />
-      <Label x={16} anchor="start" name="TRUCK" status={g.parts.truckBody} />
-      <Label x={296} anchor="end" name="REAR AXLE" status={g.parts.truckRear} />
-      <Label x={312} anchor="start" name="HITCH" status={g.parts.hitch} />
-      <Label x={624} anchor="end" name="TRAILER" status={g.parts.trailerBody} />
+      <g dangerouslySetInnerHTML={{ __html: art }} />
     </svg>
   )
 }

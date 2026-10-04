@@ -540,56 +540,149 @@ input {
   }
 }
 
-/* Rig drawing: single-ink line art. Only a part that is close or over is tinted. */
+/* Rig drawing: sticker cartoon. The status colour is the second ink on each part. */
 .rig {
   display: block;
   width: 100%;
   height: auto;
+  overflow: visible;
 }
 
-.rig-shape {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: var(--stroke-rig);
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  transition:
-    fill var(--dur-rig) var(--ease-out),
-    stroke var(--dur-rig) var(--ease-out);
-}
-
-.rig-part[data-status='amber'] .rig-shape {
-  fill: color-mix(in srgb, var(--stamp-close) 20%, transparent);
-  stroke: var(--stamp-close);
-}
-
-.rig-part[data-status='red'] .rig-shape {
-  fill: color-mix(in srgb, var(--stamp-over) 20%, transparent);
-  stroke: var(--stamp-over);
-}
-
-.rig-detail {
-  stroke: var(--ink-muted);
-}
-
-.rig-move {
-  transition: transform var(--dur-rig) var(--ease-out);
-}
-
-.rig-ground {
+.rig .ground {
   stroke: var(--rule);
   stroke-width: var(--stroke-rig);
   stroke-dasharray: 6 6;
   vector-effect: non-scaling-stroke;
 }
 
-.rig-label {
-  fill: var(--ink-muted);
+.rig .part[data-status='green'],
+.rig .sw[data-status='green'] {
+  --c: var(--stamp-pass);
+}
+
+.rig .part[data-status='amber'],
+.rig .sw[data-status='amber'] {
+  --c: var(--stamp-close);
+}
+
+.rig .part[data-status='red'],
+.rig .sw[data-status='red'] {
+  --c: var(--stamp-over);
+}
+
+.rig .part[data-status='not-rated'],
+.rig .sw[data-status='not-rated'] {
+  --c: var(--ink-muted);
+}
+
+.rig .ink2 {
+  fill: var(--c);
+}
+
+.rig .o {
+  stroke: var(--rig-outline);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.rig .d {
+  fill: none;
+  stroke: var(--rig-outline);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.rig .glass {
+  fill: var(--rig-glass);
+}
+
+.rig .metal {
+  fill: var(--rig-metal);
+}
+
+.rig .metal-line {
+  fill: none;
+  stroke: var(--rig-metal);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.rig .stripe {
+  stroke: var(--rig-sticker);
+  stroke-width: 7;
+  opacity: 0.9;
+}
+
+.rig .tire {
+  fill: var(--rig-tire);
+}
+
+.rig .pupil {
+  fill: var(--rig-outline);
+}
+
+.rig .gloss {
+  fill: none;
+  stroke: var(--rig-sticker);
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+.rig .glossdot {
+  fill: var(--rig-sticker);
+  opacity: 0.6;
+}
+
+.rig .white {
+  fill: var(--rig-sticker);
+}
+
+.rig .sil {
+  fill: var(--rig-sticker);
+  stroke: var(--rig-sticker);
+  stroke-width: 16;
+  stroke-linejoin: round;
+}
+
+.rig .shadow {
+  opacity: 0.22;
+}
+
+.rig .shadow .sil {
+  fill: #000;
+  stroke: #000;
+}
+
+.rig .drop {
+  fill: var(--rig-drop);
+}
+
+.rig text {
   font-family: var(--font-mono);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
-  text-transform: uppercase;
+  fill: var(--ink);
+}
+
+.rig .sw circle {
+  fill: var(--c);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rig .strain {
+    animation: jitter 0.5s steps(2) infinite;
+  }
+
+  @keyframes jitter {
+    50% {
+      transform: translate(-2px, 0);
+    }
+  }
 }
 
 .col-right {
