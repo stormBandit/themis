@@ -539,3 +539,174 @@ input {
     font-size: var(--text-2xl);
   }
 }
+
+/* Rig drawing: sticker cartoon. The status colour is the second ink on each part. */
+.rig {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.rig .ground {
+  stroke: var(--rule);
+  stroke-width: var(--stroke-rig);
+  stroke-dasharray: 6 6;
+  vector-effect: non-scaling-stroke;
+}
+
+.rig .part[data-status='green'],
+.rig .sw[data-status='green'] {
+  --c: var(--stamp-pass);
+}
+
+.rig .part[data-status='amber'],
+.rig .sw[data-status='amber'] {
+  --c: var(--stamp-close);
+}
+
+.rig .part[data-status='red'],
+.rig .sw[data-status='red'] {
+  --c: var(--stamp-over);
+}
+
+.rig .part[data-status='not-rated'],
+.rig .sw[data-status='not-rated'] {
+  --c: var(--ink-muted);
+}
+
+.rig .ink2 {
+  fill: var(--c);
+}
+
+.rig .o {
+  stroke: var(--rig-outline);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.rig .d {
+  fill: none;
+  stroke: var(--rig-outline);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.rig .glass {
+  fill: var(--rig-glass);
+}
+
+.rig .metal {
+  fill: var(--rig-metal);
+}
+
+.rig .metal-line {
+  fill: none;
+  stroke: var(--rig-metal);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.rig .stripe {
+  stroke: var(--rig-sticker);
+  stroke-width: 7;
+  opacity: 0.9;
+}
+
+.rig .tire {
+  fill: var(--rig-tire);
+}
+
+.rig .pupil {
+  fill: var(--rig-outline);
+}
+
+.rig .gloss {
+  fill: none;
+  stroke: var(--rig-sticker);
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+.rig .glossdot {
+  fill: var(--rig-sticker);
+  opacity: 0.6;
+}
+
+.rig .white {
+  fill: var(--rig-sticker);
+}
+
+.rig .sil {
+  fill: var(--rig-sticker);
+  stroke: var(--rig-sticker);
+  stroke-width: 16;
+  stroke-linejoin: round;
+}
+
+.rig .shadow {
+  opacity: 0.22;
+}
+
+.rig .shadow .sil {
+  fill: #000;
+  stroke: #000;
+}
+
+.rig .drop {
+  fill: var(--rig-drop);
+}
+
+.rig text {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.rig .sw circle {
+  fill: var(--c);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rig .strain {
+    animation: jitter 0.5s steps(2) infinite;
+  }
+
+  @keyframes jitter {
+    50% {
+      transform: translate(-2px, 0);
+    }
+  }
+}
+
+.col-right {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.ticket--rig .ticket__body {
+  padding-bottom: 0;
+}
+
+@media (min-width: 960px) {
+  /* Both right-hand tickets stay in view together. The column scrolls if it is taller than the screen. */
+  .col-right {
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding: var(--space-5) var(--space-3);
+    margin: calc(var(--space-5) * -1) calc(var(--space-3) * -1);
+  }
+
+  .ticket--results {
+    position: static;
+  }
+}

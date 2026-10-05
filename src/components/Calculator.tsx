@@ -11,6 +11,7 @@ import {
   VERDICT_HELP,
 } from '../lib/copy'
 import { Field } from './Field'
+import { RigDrawing } from './rig/RigDrawing'
 import { Stamp } from './Stamp'
 import { TicketLine } from './TicketLine'
 import { TongueWindow } from './TongueWindow'
@@ -97,73 +98,82 @@ export default function Calculator() {
           </div>
         </section>
 
-        <section className="ticket ticket--results" aria-labelledby="ticket-out">
-          <TicketHeader subtitle="RESULTS" date={date} />
-          <div className="ticket__body">
-            <h2 id="ticket-out" className="ticket__h">
-              Your results
-            </h2>
-
-            <dl className="summary">
-              <div>
-                <dt>Trailer loaded</dt>
-                <dd>
-                  {formatWeight(result.trailerLoaded, unit)} {unitLabel(unit)}
-                </dd>
-              </div>
-              <div>
-                <dt>Tongue weight</dt>
-                <dd>
-                  {formatWeight(result.tongueWeight, unit)} {unitLabel(unit)}
-                </dd>
-              </div>
-              <div>
-                <dt>Payload left</dt>
-                <dd>
-                  {result.payloadRemaining === null
-                    ? 'n/a'
-                    : `${formatWeight(result.payloadRemaining, unit)} ${unitLabel(unit)}`}
-                </dd>
-              </div>
-            </dl>
-
-            <ul className="lines">
-              {LINE_ORDER.map((id) => (
-                <TicketLine key={id} check={result.checks[id]} unit={unit} />
-              ))}
-              <li className="line">
-                <div className="line__head">
-                  <span className="line__label">{CHECK_LABELS.tongue}</span>
-                  <span className="line__leader" aria-hidden="true" />
-                  <Stamp status={tongue.status} />
-                </div>
-                {tongue.pct !== null ? (
-                  <>
-                    <p className="line__figures">
-                      <span className="line__used">
-                        {Math.round(tongue.pct * 10) / 10}%
-                      </span>
-                      <span className="line__of">of trailer weight</span>
-                    </p>
-                    <TongueWindow
-                      pct={tongue.pct}
-                      status={tongue.status}
-                      min={DEFAULT_CONFIG.thresholds.tongueMin}
-                      max={DEFAULT_CONFIG.thresholds.tongueMax}
-                    />
-                  </>
-                ) : (
-                  <p className="line__note">{NEEDS_HINT.tongue}</p>
-                )}
-              </li>
-            </ul>
-
-            <div className="verdict" role="status" aria-live="polite">
-              <Stamp status={result.verdict} verdict />
-              <p className="verdict__help">{VERDICT_HELP[result.verdict]}</p>
+        <div className="col-right">
+          <section className="ticket ticket--rig" aria-label="Rig drawing">
+            <TicketHeader subtitle="YOUR RIG" date={date} />
+            <div className="ticket__body">
+              <RigDrawing result={result} wdh={state.wdh} />
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="ticket ticket--results" aria-labelledby="ticket-out">
+            <TicketHeader subtitle="RESULTS" date={date} />
+            <div className="ticket__body">
+              <h2 id="ticket-out" className="ticket__h">
+                Your results
+              </h2>
+
+              <dl className="summary">
+                <div>
+                  <dt>Trailer loaded</dt>
+                  <dd>
+                    {formatWeight(result.trailerLoaded, unit)} {unitLabel(unit)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Tongue weight</dt>
+                  <dd>
+                    {formatWeight(result.tongueWeight, unit)} {unitLabel(unit)}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Payload left</dt>
+                  <dd>
+                    {result.payloadRemaining === null
+                      ? 'n/a'
+                      : `${formatWeight(result.payloadRemaining, unit)} ${unitLabel(unit)}`}
+                  </dd>
+                </div>
+              </dl>
+
+              <ul className="lines">
+                {LINE_ORDER.map((id) => (
+                  <TicketLine key={id} check={result.checks[id]} unit={unit} />
+                ))}
+                <li className="line">
+                  <div className="line__head">
+                    <span className="line__label">{CHECK_LABELS.tongue}</span>
+                    <span className="line__leader" aria-hidden="true" />
+                    <Stamp status={tongue.status} />
+                  </div>
+                  {tongue.pct !== null ? (
+                    <>
+                      <p className="line__figures">
+                        <span className="line__used">
+                          {Math.round(tongue.pct * 10) / 10}%
+                        </span>
+                        <span className="line__of">of trailer weight</span>
+                      </p>
+                      <TongueWindow
+                        pct={tongue.pct}
+                        status={tongue.status}
+                        min={DEFAULT_CONFIG.thresholds.tongueMin}
+                        max={DEFAULT_CONFIG.thresholds.tongueMax}
+                      />
+                    </>
+                  ) : (
+                    <p className="line__note">{NEEDS_HINT.tongue}</p>
+                  )}
+                </li>
+              </ul>
+
+              <div className="verdict" role="status" aria-live="polite">
+                <Stamp status={result.verdict} verdict />
+                <p className="verdict__help">{VERDICT_HELP[result.verdict]}</p>
+              </div>
+            </div>
+          </section>
+        </div>
       </main>
 
       <footer className="disclaimer">

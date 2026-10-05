@@ -24,7 +24,8 @@ export const NEEDS_HINT: Record<CheckId, string> = {
   payload: 'Enter your payload capacity to check this.',
   towRating: 'Enter your max tow rating to check this.',
   gcwr: 'Enter GVWR, payload capacity and GCWR to check this.',
-  rearAxle: 'Enter your rear GAWR, plus GVWR and payload capacity or a scale reading, to check this.',
+  rearAxle:
+    'Enter your rear GAWR, plus GVWR and payload capacity or a scale reading, to check this.',
   receiver: 'Enter your receiver max tongue weight to check this.',
   tongue: 'Enter your trailer weights to check this.',
 }
